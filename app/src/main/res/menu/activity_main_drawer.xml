@@ -25,6 +25,11 @@
             android:id="@+id/transactionList"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/hello_blank_fragment" />
+
+        <item
+            android:id="@+id/orderFragment"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/hello_blank_fragment" />
     </group>
 
     <item android:title="Communicate">
