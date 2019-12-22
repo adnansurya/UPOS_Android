@@ -42,7 +42,7 @@
         tools:layout="@layout/fragment_send" />
     <fragment
         android:id="@+id/transactionList"
-        android:name="com.upos.id.TransactionList"
+        android:name="com.upos.id.TransactionListFragment"
         android:label="fragment_transaction_list"
         tools:layout="@layout/fragment_transaction_list" />
 </navigation>
