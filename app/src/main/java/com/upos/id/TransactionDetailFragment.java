@@ -16,7 +16,7 @@ import com.upos.id.dummy.DummyContent;
 
 /**
  * A fragment representing a single Transaction detail screen.
- * This fragment is either contained in a {@link TransactionListActivity}
+ * This fragment is either contained in a TransactionListActivity
  * in two-pane mode (on tablets) or a {@link TransactionDetailActivity}
  * on handsets.
  */

@@ -9,18 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".TransactionListActivity"
-            android:label="@string/title_transaction_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity
             android:name=".TransactionDetailActivity"
             android:label="@string/title_transaction_detail"
-            android:parentActivityName=".TransactionListActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.upos.id.TransactionListActivity" />
+                android:value="com.upos.id.MainActivity" />
         </activity>
         <activity
             android:name=".MainActivity"

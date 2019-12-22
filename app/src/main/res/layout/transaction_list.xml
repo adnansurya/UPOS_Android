@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".TransactionListActivity"
+    tools:context=".MainActivity"
     tools:listitem="@layout/transaction_list_content" />
