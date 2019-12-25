@@ -9,12 +9,27 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.upos.id.dummy.DummyContent;
+
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -31,6 +46,8 @@ public class OrderFragment extends Fragment {
 
 
     private boolean mTwoPane;
+    RequestQueue requestQueue;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,9 +64,54 @@ public class OrderFragment extends Fragment {
         }
 
         View recyclerView = rootView.findViewById(R.id.category_list);
+
+        Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
+
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        Network network = new BasicNetwork(new HurlStack());
+
+        // Instantiate the RequestQueue with the cache and network.
+        requestQueue = new RequestQueue(cache, network);
+
+        // Start the queue
+        requestQueue.start();
+
+
+        getJsonData("https://mksrobotics.web.app/admin/api/kategori");
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
         return rootView;
+    }
+
+    private void getJsonData(String url){
+
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(Request.Method.GET,
+                url, null,new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.e("category", response.toString());
+
+
+                //                    status = response.getString("status");
+
+                Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_LONG).show();
+
+
+                //                adapter.notifyDataSetChanged();
+//                progressDialog.dismiss();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                Log.e("Volley", error.toString());
+//                progressDialog.dismiss();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(jsonArrReq);
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
