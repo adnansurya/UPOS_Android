@@ -28,7 +28,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.upos.id.Models.Kategori;
-import com.upos.id.dummy.DummyContent;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,8 +69,6 @@ public class OrderFragment extends Fragment {
             mTwoPane = true;
         }
 
-        View recyclerView = rootView.findViewById(R.id.category_list);
-
         Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
 
         // Set up the network to use HttpURLConnection as the HTTP client.
@@ -82,6 +80,8 @@ public class OrderFragment extends Fragment {
         // Start the queue
         requestQueue.start();
 
+
+        View recyclerView = rootView.findViewById(R.id.category_list);
         kategoriList = new ArrayList<>();
 
         getJsonData("https://mksrobotics.web.app/admin/api/kategori");
@@ -144,7 +144,7 @@ public class OrderFragment extends Fragment {
                 Kategori item = (Kategori) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
+                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.kode);
                     categoryDetailFragment fragment = new categoryDetailFragment();
                     fragment.setArguments(arguments);
                     mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
