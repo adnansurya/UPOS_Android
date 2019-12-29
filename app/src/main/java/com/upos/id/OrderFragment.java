@@ -27,10 +27,14 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.upos.id.Models.Kategori;
 import com.upos.id.dummy.DummyContent;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -47,6 +51,8 @@ public class OrderFragment extends Fragment {
 
     private boolean mTwoPane;
     RequestQueue requestQueue;
+    List<Kategori> kategoriList;
+    SimpleItemRecyclerViewAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,8 +82,10 @@ public class OrderFragment extends Fragment {
         // Start the queue
         requestQueue.start();
 
+        kategoriList = new ArrayList<>();
 
         getJsonData("https://mksrobotics.web.app/admin/api/kategori");
+        adapter = new SimpleItemRecyclerViewAdapter(this, kategoriList, mTwoPane);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
         return rootView;
@@ -85,28 +93,34 @@ public class OrderFragment extends Fragment {
 
     private void getJsonData(String url){
 
-        JsonArrayRequest jsonArrReq = new JsonArrayRequest(Request.Method.GET,
+        final JsonArrayRequest jsonArrReq = new JsonArrayRequest(Request.Method.GET,
                 url, null,new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("category", response.toString());
+                for(int i=0; i<response.length(); i++){
+                    try {
+                        JSONObject jsonObj =  response.getJSONObject(i);
+                        Kategori kategori = new Kategori();
+                        kategori.setNama(jsonObj.getString("nama"));
+                        kategori.setKode(jsonObj.getString("kode"));
+                        kategori.setKeterangan(jsonObj.getString("keterangan"));
+                        kategoriList.add(kategori);
 
 
-                //                    status = response.getString("status");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                adapter.notifyDataSetChanged();
 
-                Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_LONG).show();
-
-
-                //                adapter.notifyDataSetChanged();
-//                progressDialog.dismiss();
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                 Log.e("Volley", error.toString());
-//                progressDialog.dismiss();
             }
         });
         requestQueue = Volley.newRequestQueue(getActivity());
@@ -115,22 +129,22 @@ public class OrderFragment extends Fragment {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+        recyclerView.setAdapter(adapter);
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final OrderFragment mParentFragment;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Kategori> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                Kategori item = (Kategori) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
                     categoryDetailFragment fragment = new categoryDetailFragment();
                     fragment.setArguments(arguments);
                     mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
@@ -139,7 +153,7 @@ public class OrderFragment extends Fragment {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, categoryDetailActivity.class);
-                    intent.putExtra(categoryDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
 
                     context.startActivity(intent);
                 }
@@ -147,7 +161,7 @@ public class OrderFragment extends Fragment {
         };
 
         SimpleItemRecyclerViewAdapter(OrderFragment parent,
-                                      List<DummyContent.DummyItem> items,
+                                      List<Kategori> items,
                                       boolean twoPane) {
             mValues = items;
             mParentFragment= parent;
@@ -163,8 +177,8 @@ public class OrderFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(mValues.get(position).kode);
+            holder.mContentView.setText(mValues.get(position).nama);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
