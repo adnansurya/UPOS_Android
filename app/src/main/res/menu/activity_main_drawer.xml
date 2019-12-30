@@ -12,12 +12,12 @@
         <item
             android:id="@+id/transactionList"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/hello_blank_fragment" />
+            android:title="Transaction" />
 
         <item
             android:id="@+id/orderFragment"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/hello_blank_fragment" />
+            android:title="Order" />
     </group>
 
 
