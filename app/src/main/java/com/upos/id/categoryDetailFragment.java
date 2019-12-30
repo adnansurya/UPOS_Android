@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.upos.id.Models.Produk;
 import com.upos.id.dummy.DummyContent;
@@ -159,6 +160,7 @@ public class categoryDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Produk item = (Produk) view.getTag();
+                Toast.makeText(view.getContext(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
 //                if (mTwoPane) {
 //                    Bundle arguments = new Bundle();
 //                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
@@ -187,7 +189,7 @@ public class categoryDetailFragment extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.category_list_content, parent, false);
+                    .inflate(R.layout.produk_list_content, parent, false);
             return new ViewHolder(view);
         }
 
