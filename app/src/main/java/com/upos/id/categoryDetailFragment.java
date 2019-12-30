@@ -146,7 +146,7 @@ public class categoryDetailFragment extends Fragment {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(adapter);
-        GridLayoutManager manager = new GridLayoutManager(getActivity(), 2, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
     }
 
@@ -160,7 +160,7 @@ public class categoryDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Produk item = (Produk) view.getTag();
-                Toast.makeText(view.getContext(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mParentFragment.getActivity(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
 //                if (mTwoPane) {
 //                    Bundle arguments = new Bundle();
 //                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
@@ -195,8 +195,7 @@ public class categoryDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).kategori);
-            holder.mContentView.setText(mValues.get(position).nama);
+            holder.mNamaView.setText(mValues.get(position).nama);
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -208,13 +207,13 @@ public class categoryDetailFragment extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
+            final TextView mNamaView;
+
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mNamaView = (TextView) view.findViewById(R.id.namaTxt);
+
             }
         }
 
