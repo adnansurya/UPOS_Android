@@ -9,6 +9,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +124,7 @@ public class categoryDetailFragment extends Fragment {
                         produk.setNama(jsonObj.getString("nama"));
                         produk.setKode(jsonObj.getString("kode"));
                         produk.setKeterangan(jsonObj.getString("keterangan"));
+                        produk.setGambar(jsonObj.getString("gambar"));
                         produkList.add(produk);
 
 
@@ -195,7 +199,16 @@ public class categoryDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
+
             holder.mNamaView.setText(mValues.get(position).nama);
+            if(!mValues.get(position).gambar.isEmpty()){
+                String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mksrobotics.appspot.com/o/produk%2F"+ mValues.get(position).gambar + "?alt=media";
+                Glide.with(mParentFragment.getContext())
+                        .load(imageUrl)
+                        .thumbnail(0.5f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.mImageView);
+            }
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -208,11 +221,13 @@ public class categoryDetailFragment extends Fragment {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mNamaView;
+            final ImageView mImageView;
 
 
             ViewHolder(View view) {
                 super(view);
-                mNamaView = (TextView) view.findViewById(R.id.namaTxt);
+                mNamaView = view.findViewById(R.id.namaTxt);
+                mImageView = view.findViewById(R.id.imageView);
 
             }
         }
