@@ -9,4 +9,5 @@
     <dimen name="item_width">200dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
+    <dimen name="badge_count_textsize">15sp</dimen>
 </resources>

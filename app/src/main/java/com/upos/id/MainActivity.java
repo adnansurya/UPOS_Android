@@ -1,10 +1,14 @@
 package com.upos.id;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -53,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setCount(this, "9", menu);
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -64,5 +74,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void setCount(Context context, String count, Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.ic_group);
+        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+
+        CountDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
+        if (reuse instanceof CountDrawable) {
+            badge = (CountDrawable) reuse;
+        } else {
+            badge = new CountDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
     }
 }
