@@ -10,14 +10,14 @@
             android:title="@string/menu_home" />
 
         <item
+            android:id="@+id/orderFragment"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Order Baru" />
+
+        <item
             android:id="@+id/transactionList"
             android:icon="@drawable/ic_menu_manage"
             android:title="Transaction" />
-
-        <item
-            android:id="@+id/orderFragment"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Order" />
     </group>
 
 
