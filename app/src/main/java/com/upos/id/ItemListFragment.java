@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.upos.id.Models.Produk;
 import com.upos.id.dummy.DummyContent;
@@ -47,7 +46,7 @@ import java.util.List;
  * in two-pane mode (on tablets) or a {@link categoryDetailActivity}
  * on handsets.
  */
-public class categoryDetailFragment extends Fragment {
+public class ItemListFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -72,7 +71,7 @@ public class categoryDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-//    public categoryDetailFragment() {
+//    public ItemListFragment() {
 //    }
 
     @Override
@@ -188,7 +187,7 @@ public class categoryDetailFragment extends Fragment {
     public class RecyclerViewAdapter
             extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-        private final categoryDetailFragment mParentFragment;
+        private final ItemListFragment mParentFragment;
         private final List<Produk> mValues;
 
 
@@ -207,8 +206,8 @@ public class categoryDetailFragment extends Fragment {
 //                Toast.makeText(mParentFragment.getActivity(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
 //                if (mTwoPane) {
 //                    Bundle arguments = new Bundle();
-//                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
-//                    categoryDetailFragment fragment = new categoryDetailFragment();
+//                    arguments.putString(ItemListFragment.ARG_ITEM_ID, item.keterangan);
+//                    ItemListFragment fragment = new ItemListFragment();
 //                    fragment.setArguments(arguments);
 //                    mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
 //                            .replace(R.id.category_detail_container, fragment)
@@ -216,14 +215,14 @@ public class categoryDetailFragment extends Fragment {
 //                } else {
 //                    Context context = view.getContext();
 //                    Intent intent = new Intent(context, categoryDetailActivity.class);
-//                    intent.putExtra(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
+//                    intent.putExtra(ItemListFragment.ARG_ITEM_ID, item.keterangan);
 //
 //                    context.startActivity(intent);
 //                }
             }
         };
 
-        RecyclerViewAdapter(categoryDetailFragment parent,
+        RecyclerViewAdapter(ItemListFragment parent,
                             List<Produk> items) {
             mValues = items;
             mParentFragment = parent;

@@ -84,8 +84,8 @@ public class categoryListActivity extends AppCompatActivity {
                 DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.id);
-                    categoryDetailFragment fragment = new categoryDetailFragment();
+                    arguments.putString(ItemListFragment.ARG_ITEM_ID, item.id);
+                    ItemListFragment fragment = new ItemListFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.category_detail_container, fragment)
@@ -93,7 +93,7 @@ public class categoryListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, categoryDetailActivity.class);
-                    intent.putExtra(categoryDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(ItemListFragment.ARG_ITEM_ID, item.id);
 
                     context.startActivity(intent);
                 }

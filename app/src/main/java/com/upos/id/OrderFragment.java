@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -144,8 +143,8 @@ public class OrderFragment extends Fragment {
                 Kategori item = (Kategori) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.kode);
-                    categoryDetailFragment fragment = new categoryDetailFragment();
+                    arguments.putString(ItemListFragment.ARG_ITEM_ID, item.kode);
+                    ItemListFragment fragment = new ItemListFragment();
                     fragment.setArguments(arguments);
                     mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.category_detail_container, fragment)
@@ -153,7 +152,7 @@ public class OrderFragment extends Fragment {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, categoryDetailActivity.class);
-                    intent.putExtra(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
+                    intent.putExtra(ItemListFragment.ARG_ITEM_ID, item.keterangan);
 
                     context.startActivity(intent);
                 }
