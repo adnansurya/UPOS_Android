@@ -56,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        setCount(this, "9", menu);
-        return true;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,22 +71,5 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void setCount(Context context, String count, Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.ic_group);
-        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
 
-        CountDrawable badge;
-
-        // Reuse drawable if possible
-        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
-        if (reuse instanceof CountDrawable) {
-            badge = (CountDrawable) reuse;
-        } else {
-            badge = new CountDrawable(context);
-        }
-
-        badge.setCount(count);
-        icon.mutate();
-        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
-    }
 }

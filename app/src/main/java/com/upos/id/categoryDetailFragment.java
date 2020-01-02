@@ -1,6 +1,9 @@
 package com.upos.id;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 
 import com.android.volley.Request;
@@ -20,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -54,18 +59,21 @@ public class categoryDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
     String filter;
+    String nama_produk = "";
+    int count = 0;
 
     RequestQueue requestQueue;
     List<Produk> produkList;
     RecyclerViewAdapter adapter;
 
 
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public categoryDetailFragment() {
-    }
+//    public categoryDetailFragment() {
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,16 +98,9 @@ public class categoryDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.category_detail, container, false);
-
-        // Show the dummy content as text in a TextView.
-//        if (mItem != null) {
-//            ((TextView) rootView.findViewById(R.id.category_detail)).setText(dataku);
-//        }
-
-//        ((TextView) rootView.findViewById(R.id.category_detail)).setText(filter);
-
-
+        
         RecyclerView recyclerView = rootView.findViewById(R.id.produk_list);
+
 
         produkList = new ArrayList<>();
 
@@ -107,8 +108,20 @@ public class categoryDetailFragment extends Fragment {
         adapter = new RecyclerViewAdapter(this, produkList);
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
+        setHasOptionsMenu(true);
         return rootView;
     }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        setCount(getActivity(), String.valueOf(count), menu);
+        super.onPrepareOptionsMenu(menu);
+
+
+    }
+
+
 
     private void getJsonData(String url){
 
@@ -125,9 +138,8 @@ public class categoryDetailFragment extends Fragment {
                         produk.setKode(jsonObj.getString("kode"));
                         produk.setKeterangan(jsonObj.getString("keterangan"));
                         produk.setGambar(jsonObj.getString("gambar"));
+                        produk.setHargaJual(jsonObj.getString("hargaJual"));
                         produkList.add(produk);
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -154,17 +166,45 @@ public class categoryDetailFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
     }
 
-    public static class RecyclerViewAdapter
+    public void setCount(Context context, String count, Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.ic_group);
+        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+
+        CountDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
+        if (reuse instanceof CountDrawable) {
+            badge = (CountDrawable) reuse;
+        } else {
+            badge = new CountDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
+    }
+
+    public class RecyclerViewAdapter
             extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
         private final categoryDetailFragment mParentFragment;
         private final List<Produk> mValues;
 
+
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Produk item = (Produk) view.getTag();
-                Toast.makeText(mParentFragment.getActivity(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
+                count++;
+                Log.e("COUNT", String.valueOf(count));
+                mParentFragment.getActivity().invalidateOptionsMenu();
+
+
+
+
+//                Toast.makeText(mParentFragment.getActivity(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
 //                if (mTwoPane) {
 //                    Bundle arguments = new Bundle();
 //                    arguments.putString(categoryDetailFragment.ARG_ITEM_ID, item.keterangan);
@@ -233,4 +273,8 @@ public class categoryDetailFragment extends Fragment {
         }
 
     }
+
+
+
+
 }
