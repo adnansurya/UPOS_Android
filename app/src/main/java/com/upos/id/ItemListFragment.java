@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.upos.id.Models.Produk;
 import com.upos.id.dummy.DummyContent;
@@ -59,11 +60,13 @@ public class ItemListFragment extends Fragment {
     private DummyContent.DummyItem mItem;
     String filter;
     String nama_produk = "";
-    int count = 0;
+
+    JSONObject cart;
 
     RequestQueue requestQueue;
     List<Produk> produkList;
     RecyclerViewAdapter adapter;
+    SharedPreferenceManager sharePrefMan;
 
 
 
@@ -105,6 +108,18 @@ public class ItemListFragment extends Fragment {
 
         getJsonData("https://mksrobotics.web.app/admin/api/filter/data_produk/by/kategori/equals/" + filter);
         adapter = new RecyclerViewAdapter(this, produkList);
+        sharePrefMan = new SharedPreferenceManager("order", getActivity());
+
+
+        try {
+            cart = new JSONObject(sharePrefMan.getSpString("cart"));
+
+            Log.e("CART load", cart.toString());
+            getActivity().invalidateOptionsMenu();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            cart = new JSONObject();
+        }
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
         setHasOptionsMenu(true);
@@ -114,7 +129,12 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
-        setCount(getActivity(), String.valueOf(count), menu);
+        if(cart.length() != 0){
+            setCount(getActivity(), String.valueOf(cart.length()), menu);
+        }else{
+            setCount(getActivity(), "0", menu);
+        }
+
         super.onPrepareOptionsMenu(menu);
 
 
@@ -128,7 +148,7 @@ public class ItemListFragment extends Fragment {
                 url, null,new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("category", response.toString());
+//                Log.e("category", response.toString());
                 for(int i=0; i<response.length(); i++){
                     try {
                         JSONObject jsonObj =  response.getJSONObject(i);
@@ -195,11 +215,40 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Produk item = (Produk) view.getTag();
-                count++;
-                Log.e("COUNT", String.valueOf(count));
-                mParentFragment.getActivity().invalidateOptionsMenu();
+                Produk produk = (Produk) view.getTag();
+                boolean existed = false;
 
+
+
+
+                JSONObject item;
+                try {
+                    item = cart.getJSONObject(produk.kode);
+                    existed = true;
+                    int qty = Integer.parseInt(item.getString("qty"));
+                    item.put("qty", String.valueOf(qty+1));
+                    cart.put(produk.kode, item);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+                if(!existed){
+                    item = new JSONObject();
+                    try {
+
+                        item.put("nama", produk.nama);
+                        item.put("hargaJual", produk.hargaJual);
+                        item.put("qty", "1");
+                        cart.put(produk.kode, item);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                mParentFragment.getActivity().invalidateOptionsMenu();
 
 
 
@@ -270,6 +319,20 @@ public class ItemListFragment extends Fragment {
 
             }
         }
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+        sharePrefMan.setSPString("cart",cart.toString());
+
+        super.onDestroy();
+    }
+
+    public void addCart(String item){
+
+
 
     }
 
