@@ -9,7 +9,14 @@
         android:id="@+id/nav_home"
         android:name="com.upos.id.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_transactionList"
+            app:destination="@id/transactionList" />
+        <action
+            android:id="@+id/action_nav_home_to_orderFragment"
+            app:destination="@id/orderFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/transactionList"
