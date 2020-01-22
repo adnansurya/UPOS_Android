@@ -38,8 +38,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A fragment representing a single category detail screen.
@@ -68,6 +71,8 @@ public class ItemListFragment extends Fragment {
     RecyclerViewAdapter adapter;
     SharedPreferenceManager sharePrefMan;
 
+    TextView totalPrice;
+
 
 
     /**
@@ -89,6 +94,7 @@ public class ItemListFragment extends Fragment {
 //            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
+            totalPrice = activity.findViewById(R.id.priceTxt);
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
 //                appBarLayout.setTitle(mItem.content);
@@ -217,10 +223,6 @@ public class ItemListFragment extends Fragment {
 
                 Produk produk = (Produk) view.getTag();
                 boolean existed = false;
-
-
-
-
                 JSONObject item;
                 try {
                     item = cart.getJSONObject(produk.kode);
@@ -231,7 +233,6 @@ public class ItemListFragment extends Fragment {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-
                 }
 
                 if(!existed){
@@ -247,27 +248,11 @@ public class ItemListFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
-
                 mParentFragment.getActivity().invalidateOptionsMenu();
 
 
+                getTotalHarga();
 
-//                Toast.makeText(mParentFragment.getActivity(), "Produk : " + item.nama, Toast.LENGTH_SHORT).show();
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putString(ItemListFragment.ARG_ITEM_ID, item.keterangan);
-//                    ItemListFragment fragment = new ItemListFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentFragment.getActivity().getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.category_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = view.getContext();
-//                    Intent intent = new Intent(context, categoryDetailActivity.class);
-//                    intent.putExtra(ItemListFragment.ARG_ITEM_ID, item.keterangan);
-//
-//                    context.startActivity(intent);
-//                }
             }
         };
 
@@ -322,6 +307,34 @@ public class ItemListFragment extends Fragment {
 
     }
 
+    void getTotalHarga(){
+        Iterator keys = cart.keys();
+        int totalCart = 0;
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            JSONObject value = null;
+            String hargaJual = "",qty = "";
+            int totalPerItem = 0;
+            try {
+                value = cart.getJSONObject((String) key);
+                hargaJual = value.getString("hargaJual");
+                qty = value.getString("qty");
+                totalPerItem = Integer.parseInt(hargaJual) * Integer.parseInt(qty);
+                totalCart += totalPerItem;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.e("HARGA JUAL / QTY", hargaJual + " / " +qty);
+//                    Log.e("HARGA JUAL", hargaJual);
+        }
+        Log.e("Total", String.valueOf(totalCart));
+
+        Locale locale = new Locale("id", "ID");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+        totalPrice.setText( currencyFormatter.format(totalCart));
+
+    }
     @Override
     public void onDestroy() {
 
@@ -330,9 +343,9 @@ public class ItemListFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void addCart(String item){
+    public void updateTotal(){
 
-
+        TextView totalTxt;
 
     }
 
