@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,10 +25,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    CartManager cartManager;
+    JSONObject cart;
+    TextView totalPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        totalPrice = findViewById(R.id.priceTxt);
+        SharedPreferenceManager  sharePrefMan = new SharedPreferenceManager("order", MainActivity.this);
+
+
+        try {
+            cart = new JSONObject(sharePrefMan.getSpString("cart"));
+            Log.e("CART load", cart.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            cart = new JSONObject();
+        }
+        cartManager = new CartManager(cart);
+        totalPrice.setText(cartManager.getTotalHarga());
+
+        invalidateOptionsMenu();
     }
 
 
@@ -61,8 +85,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        cartManager.setCount(MainActivity.this, menu);
+//        setCount(MainActivity.this, String.valueOf(cart.length()), menu);
+
+
+
         return true;
     }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {

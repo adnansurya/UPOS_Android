@@ -71,7 +71,10 @@ public class ItemListFragment extends Fragment {
     RecyclerViewAdapter adapter;
     SharedPreferenceManager sharePrefMan;
 
+    CartManager cartManager;
     TextView totalPrice;
+
+
 
 
 
@@ -95,11 +98,14 @@ public class ItemListFragment extends Fragment {
 
             Activity activity = this.getActivity();
             totalPrice = activity.findViewById(R.id.priceTxt);
+
+
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
 //                appBarLayout.setTitle(mItem.content);
             }
         }
+
     }
 
     @Override
@@ -126,25 +132,13 @@ public class ItemListFragment extends Fragment {
             e.printStackTrace();
             cart = new JSONObject();
         }
+        cartManager = new CartManager(cart);
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
         setHasOptionsMenu(true);
         return rootView;
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-
-        if(cart.length() != 0){
-            setCount(getActivity(), String.valueOf(cart.length()), menu);
-        }else{
-            setCount(getActivity(), "0", menu);
-        }
-
-        super.onPrepareOptionsMenu(menu);
-
-
-    }
 
 
 
@@ -191,24 +185,6 @@ public class ItemListFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
     }
 
-    public void setCount(Context context, String count, Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.ic_group);
-        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
-
-        CountDrawable badge;
-
-        // Reuse drawable if possible
-        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
-        if (reuse instanceof CountDrawable) {
-            badge = (CountDrawable) reuse;
-        } else {
-            badge = new CountDrawable(context);
-        }
-
-        badge.setCount(count);
-        icon.mutate();
-        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
-    }
 
     public class RecyclerViewAdapter
             extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -248,10 +224,16 @@ public class ItemListFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+
+                cartManager = new CartManager(cart);
+                totalPrice.setText(cartManager.getTotalHarga());
+                Log.e("TOTAL HARGA", cartManager.getTotalHarga());
+
                 mParentFragment.getActivity().invalidateOptionsMenu();
 
 
-                getTotalHarga();
+
+
 
             }
         };
@@ -307,34 +289,13 @@ public class ItemListFragment extends Fragment {
 
     }
 
-    void getTotalHarga(){
-        Iterator keys = cart.keys();
-        int totalCart = 0;
-        while (keys.hasNext()) {
-            Object key = keys.next();
-            JSONObject value = null;
-            String hargaJual = "",qty = "";
-            int totalPerItem = 0;
-            try {
-                value = cart.getJSONObject((String) key);
-                hargaJual = value.getString("hargaJual");
-                qty = value.getString("qty");
-                totalPerItem = Integer.parseInt(hargaJual) * Integer.parseInt(qty);
-                totalCart += totalPerItem;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            Log.e("HARGA JUAL / QTY", hargaJual + " / " +qty);
-//                    Log.e("HARGA JUAL", hargaJual);
-        }
-        Log.e("Total", String.valueOf(totalCart));
-
-        Locale locale = new Locale("id", "ID");
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
-        totalPrice.setText( currencyFormatter.format(totalCart));
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        cartManager.setCount(getActivity(),menu );
+        super.onPrepareOptionsMenu(menu);
 
     }
+
     @Override
     public void onDestroy() {
 
@@ -342,14 +303,5 @@ public class ItemListFragment extends Fragment {
 
         super.onDestroy();
     }
-
-    public void updateTotal(){
-
-        TextView totalTxt;
-
-    }
-
-
-
 
 }
