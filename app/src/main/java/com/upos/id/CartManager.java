@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 import androidx.cardview.widget.CardView;
 
+import com.upos.id.Models.Produk;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,9 +22,19 @@ public class CartManager {
 
     JSONObject cart;
 
-    public CartManager(JSONObject mycart){
-        this.cart = mycart;
+    public CartManager(String jsonString){
+        JSONObject myCart;
+        try {
+            myCart = new JSONObject(jsonString);
+//            Log.e("CART load", cart.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            myCart = new JSONObject();
+        }
+        this.cart = myCart;
     }
+
+
 
     public String getTotalHarga(){
         Iterator keys = cart.keys();
@@ -59,6 +71,39 @@ public class CartManager {
             totalItem = cart.length();
         }
         return String.valueOf(totalItem);
+    }
+
+    public void addItem (Produk produk){
+        boolean existed = false;
+        JSONObject item;
+        try {
+            item = cart.getJSONObject(produk.kode);
+            existed = true;
+            int qty = Integer.parseInt(item.getString("qty"));
+            item.put("qty", String.valueOf(qty+1));
+            cart.put(produk.kode, item);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(!existed){
+            item = new JSONObject();
+            try {
+
+                item.put("nama", produk.nama);
+                item.put("hargaJual", produk.hargaJual);
+                item.put("qty", "1");
+                cart.put(produk.kode, item);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public JSONObject getCart(){
+        return cart;
     }
 
     public void setCount(Context context, Menu menu) {

@@ -123,16 +123,8 @@ public class ItemListFragment extends Fragment {
         sharePrefMan = new SharedPreferenceManager("order", getActivity());
 
 
-        try {
-            cart = new JSONObject(sharePrefMan.getSpString("cart"));
 
-            Log.e("CART load", cart.toString());
-            getActivity().invalidateOptionsMenu();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            cart = new JSONObject();
-        }
-        cartManager = new CartManager(cart);
+        cartManager = new CartManager(sharePrefMan.getSpString("cart"));
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
         setHasOptionsMenu(true);
@@ -198,34 +190,8 @@ public class ItemListFragment extends Fragment {
             public void onClick(View view) {
 
                 Produk produk = (Produk) view.getTag();
-                boolean existed = false;
-                JSONObject item;
-                try {
-                    item = cart.getJSONObject(produk.kode);
-                    existed = true;
-                    int qty = Integer.parseInt(item.getString("qty"));
-                    item.put("qty", String.valueOf(qty+1));
-                    cart.put(produk.kode, item);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if(!existed){
-                    item = new JSONObject();
-                    try {
-
-                        item.put("nama", produk.nama);
-                        item.put("hargaJual", produk.hargaJual);
-                        item.put("qty", "1");
-                        cart.put(produk.kode, item);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                cartManager = new CartManager(cart);
+                cartManager.addItem(produk);
                 totalPrice.setText(cartManager.getTotalHarga());
                 Log.e("TOTAL HARGA", cartManager.getTotalHarga());
 
@@ -299,7 +265,7 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onDestroy() {
 
-        sharePrefMan.setSPString("cart",cart.toString());
+        sharePrefMan.setSPString("cart",cartManager.getCart().toString());
 
         super.onDestroy();
     }

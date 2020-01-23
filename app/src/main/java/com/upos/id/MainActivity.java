@@ -66,15 +66,7 @@ public class MainActivity extends AppCompatActivity {
         totalPrice = findViewById(R.id.priceTxt);
         SharedPreferenceManager  sharePrefMan = new SharedPreferenceManager("order", MainActivity.this);
 
-
-        try {
-            cart = new JSONObject(sharePrefMan.getSpString("cart"));
-            Log.e("CART load", cart.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            cart = new JSONObject();
-        }
-        cartManager = new CartManager(cart);
+        cartManager = new CartManager(sharePrefMan.getSpString("cart"));
         totalPrice.setText(cartManager.getTotalHarga());
 
         invalidateOptionsMenu();
