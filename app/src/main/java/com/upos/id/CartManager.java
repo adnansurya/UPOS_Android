@@ -26,15 +26,12 @@ public class CartManager {
         JSONObject myCart;
         try {
             myCart = new JSONObject(jsonString);
-//            Log.e("CART load", cart.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             myCart = new JSONObject();
         }
         this.cart = myCart;
     }
-
-
 
     public String getTotalHarga(){
         Iterator keys = cart.keys();
@@ -53,16 +50,14 @@ public class CartManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             Log.e("HARGA JUAL / QTY", hargaJual + " / " +qty);
-//                    Log.e("HARGA JUAL", hargaJual);
         }
         Log.e("Total", String.valueOf(totalCart));
 
         Locale locale = new Locale("id", "ID");
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
-        return currencyFormatter.format(totalCart);
 
+        return currencyFormatter.format(totalCart);
     }
 
     public String getTotalItem(){
@@ -83,20 +78,20 @@ public class CartManager {
             item.put("qty", String.valueOf(qty+1));
             cart.put(produk.kode, item);
 
-        } catch (JSONException e) {
+        }catch (JSONException e){
             e.printStackTrace();
         }
 
         if(!existed){
             item = new JSONObject();
-            try {
+            try{
 
                 item.put("nama", produk.nama);
                 item.put("hargaJual", produk.hargaJual);
                 item.put("qty", "1");
                 cart.put(produk.kode, item);
 
-            } catch (JSONException e) {
+            }catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -107,12 +102,11 @@ public class CartManager {
     }
 
     public void setCount(Context context, Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.ic_group);
+        MenuItem menuItem = menu.findItem(R.id.ic_cart_list);
         LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
 
         CountDrawable badge;
 
-        // Reuse drawable if possible
         Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
         if (reuse instanceof CountDrawable) {
             badge = (CountDrawable) reuse;

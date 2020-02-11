@@ -193,7 +193,7 @@ public class OrderFragment extends Fragment {
 
             ViewHolder(View view) {
                 super(view);
-                mNameView = (TextView) view.findViewById(R.id.nameTxt);
+                mNameView = view.findViewById(R.id.nameTxt);
             }
         }
     }

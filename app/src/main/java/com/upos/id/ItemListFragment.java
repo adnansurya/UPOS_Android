@@ -74,16 +74,10 @@ public class ItemListFragment extends Fragment {
     CartManager cartManager;
     TextView totalPrice;
 
-
-
-
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-//    public ItemListFragment() {
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +99,6 @@ public class ItemListFragment extends Fragment {
 //                appBarLayout.setTitle(mItem.content);
             }
         }
-
     }
 
     @Override
@@ -156,13 +149,10 @@ public class ItemListFragment extends Fragment {
                     }
                 }
                 adapter.notifyDataSetChanged();
-
-
             }
         }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            public void onErrorResponse(VolleyError error){
                 Log.e("Volley", error.toString());
             }
         });
@@ -196,10 +186,6 @@ public class ItemListFragment extends Fragment {
                 Log.e("TOTAL HARGA", cartManager.getTotalHarga());
 
                 mParentFragment.getActivity().invalidateOptionsMenu();
-
-
-
-
 
             }
         };
@@ -244,29 +230,24 @@ public class ItemListFragment extends Fragment {
             final TextView mNamaView;
             final ImageView mImageView;
 
-
             ViewHolder(View view) {
                 super(view);
                 mNamaView = view.findViewById(R.id.namaTxt);
                 mImageView = view.findViewById(R.id.imageView);
-
             }
         }
-
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         cartManager.setCount(getActivity(),menu );
         super.onPrepareOptionsMenu(menu);
-
     }
 
     @Override
     public void onDestroy() {
 
         sharePrefMan.setSPString("cart",cartManager.getCart().toString());
-
         super.onDestroy();
     }
 

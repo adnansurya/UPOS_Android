@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/ic_group"
+        android:id="@+id/ic_cart_list"
         android:icon="@drawable/actionbar_group_icon"
         android:title="Notif"
         app:showAsAction="always" />
